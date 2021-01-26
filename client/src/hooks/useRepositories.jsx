@@ -1,24 +1,37 @@
-import { useState, useEffect } from 'react';
+import { gql, useQuery } from '@apollo/react-hooks';
+
+export const GET_REPOS = gql`
+  query {
+    repositories {
+      edges {
+        node {
+          id
+          fullName
+          ratingAverage
+          reviewCount
+          stargazersCount
+          forksCount
+          ownerAvatarUrl
+          description
+          language
+        }
+      }
+    }
+  }
+`;
 
 const useRepositories = () => {
-  const [repositories, setRepositories] = useState();
-  const [loading, setLoading] = useState(false);
+  const { data, loading, refetch } = useQuery(GET_REPOS, {
+    fetchPolicy: 'cache-and-network',
+  });
 
-  const fetchRepositories = async () => {
-    setLoading(true);
+  let repositories = [];
 
-    const response = await fetch('http://172.23.119.24:5000/api/repositories');
-    const json = await response.json();
+  if (data) {
+    repositories = data.repositories.edges.map(({ node }) => node);
+  }
 
-    setLoading(false);
-    setRepositories(json);
-  };
-
-  useEffect(() => {
-    fetchRepositories();
-  }, []);
-
-  return { repositories, loading, refetch: fetchRepositories };
+  return { repositories, loading, refetch };
 };
 
 export default useRepositories;

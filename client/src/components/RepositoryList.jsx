@@ -14,15 +14,11 @@ const ItemSeparator = () => <View style={styles.separator} />;
 const RepositoryList = () => {
   const { repositories } = useRepositories();
 
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : [];
-
   const renderRepo = ({ item }) => <RepositoryItem repo={item} />;
 
   return (
     <FlatList
-      data={repositoryNodes}
+      data={repositories}
       ItemSeparatorComponent={ItemSeparator}
       renderItem={renderRepo}
       keyExtractor={(repo) => repo.id}
