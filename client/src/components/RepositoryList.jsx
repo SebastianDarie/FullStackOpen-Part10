@@ -14,14 +14,16 @@ const ItemSeparator = () => <View style={styles.separator} />;
 const RepositoryList = () => {
   const { repositories } = useRepositories();
 
-  const renderRepo = ({ item }) => <RepositoryItem repo={item} />;
+  return <RepositoryListContainer repositories={repositories} />;
+};
 
+export const RepositoryListContainer = ({ repositories }) => {
   return (
     <FlatList
       data={repositories}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={renderRepo}
       keyExtractor={(repo) => repo.id}
+      ItemSeparatorComponent={ItemSeparator}
+      renderItem={({ item }) => <RepositoryItem repo={item} />}
     />
   );
 };

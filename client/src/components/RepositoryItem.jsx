@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import { convertThousands } from '../utils/functions';
 import theme from '../theme';
 
 const styles = StyleSheet.create({
@@ -63,6 +64,7 @@ const styles = StyleSheet.create({
 
 const RepositoryItem = ({ repo }) => {
   const {
+    id,
     fullName,
     description,
     language,
@@ -83,11 +85,14 @@ const RepositoryItem = ({ repo }) => {
         <View style={styles.repoInfo}>
           <Text style={styles.name}>{fullName}</Text>
           <Text style={styles.text}>{description}</Text>
-          <Text style={styles.language}>{language}</Text>
+          <Text style={styles.language} testID={`${id}/lang`}>
+            {language}
+          </Text>
         </View>
       </View>
 
       <RepoStats
+        id={id}
         forksCount={forksCount}
         stargazersCount={stargazersCount}
         ratingAverage={ratingAverage}
@@ -98,31 +103,36 @@ const RepositoryItem = ({ repo }) => {
 };
 
 const RepoStats = ({
+  id,
   forksCount,
   stargazersCount,
   ratingAverage,
   reviewCount,
 }) => {
-  const convertThousands = (num) => {
-    return num >= 1000 ? `${Math.round(num / 100) / 10}k` : num;
-  };
-
   return (
     <View style={[styles.infoContainer, styles.repoStats]}>
       <View style={styles.individualStat}>
-        <Text style={styles.boldText}>{convertThousands(stargazersCount)}</Text>
+        <Text style={styles.boldText} testID={`${id}/stars`}>
+          {convertThousands(stargazersCount)}
+        </Text>
         <Text style={styles.text}>Stars</Text>
       </View>
       <View style={styles.individualStat}>
-        <Text style={styles.boldText}>{convertThousands(forksCount)}</Text>
+        <Text style={styles.boldText} testID={`${id}/forks`}>
+          {convertThousands(forksCount)}
+        </Text>
         <Text style={styles.text}>Forks</Text>
       </View>
       <View style={styles.individualStat}>
-        <Text style={styles.boldText}>{reviewCount}</Text>
+        <Text style={styles.boldText} testID={`${id}/reviewCount`}>
+          {reviewCount}
+        </Text>
         <Text style={styles.text}>Reviews</Text>
       </View>
       <View style={styles.individualStat}>
-        <Text style={styles.boldText}>{ratingAverage}</Text>
+        <Text style={styles.boldText} testID={`${id}/ratingAvg`}>
+          {ratingAverage}
+        </Text>
         <Text style={styles.text}>Rating</Text>
       </View>
     </View>
