@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
 
-import { RepositoryListContainer } from '../../components/RepositoryList';
+import RepositoryListContainer from '../../components/RepositoryList/RepositoryListContainer';
 import { convertThousands } from '../../utils/functions';
 
 describe('RepositoryList', () => {
@@ -72,16 +72,15 @@ describe('RepositoryList', () => {
             stargazersCount,
           ].map(convertThousands);
 
-          getByText(fullName);
-          getByText(description);
-
-          expect(getByTestId(`${id}/lang`)).toHaveTextContext(language);
-          expect(getByTestId(`${id}/forks`)).toHaveTextContext(formattedForks);
-          expect(getByTestId(`${id}/stars`)).toHaveTextContext(formattedStars);
-          expect(getByTestId(`${id}/reviewCount`)).toHaveTextContext(
+          expect(getByText(fullName)).toHaveTextContent(fullName);
+          expect(getByText(description)).toHaveTextContent(description);
+          expect(getByTestId(`${id}/lang`)).toHaveTextContent(language);
+          expect(getByTestId(`${id}/forks`)).toHaveTextContent(formattedForks);
+          expect(getByTestId(`${id}/stars`)).toHaveTextContent(formattedStars);
+          expect(getByTestId(`${id}/reviewCount`)).toHaveTextContent(
             reviewCount
           );
-          expect(getByTestId(`${id}/ratingAvg`)).toHaveTextContext(
+          expect(getByTestId(`${id}/ratingAvg`)).toHaveTextContent(
             ratingAverage
           );
         }
