@@ -1,7 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { convertThousands } from '../../utils/functions';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { GET_REPO } from '../../graphql/queries';
+import { useParams } from 'react-router-native';
 import theme from '../../theme';
+import SingleRepository from './SingleRepository';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -14,129 +18,44 @@ const styles = StyleSheet.create({
     padding: 8,
   },
 
-  imageContainer: {
-    flex: 2,
-    marginLeft: 5,
-  },
-
-  imageStyle: {
-    borderRadius: 4,
-    height: 48,
-    width: 48,
-  },
-
-  repoInfo: {
-    flex: 9,
-    justifyContent: 'space-between',
-  },
-
-  name: {
-    fontSize: theme.fontSizes.subheading,
-    fontWeight: theme.fontWeights.bold,
-  },
-
-  text: {
-    color: theme.colors.textSecondary,
-  },
-
-  language: {
-    alignSelf: 'flex-start',
+  buttonContainer: {
     backgroundColor: theme.colors.primary,
     borderRadius: 4,
+    justifyContent: 'center',
+    margin: 8,
+    padding: 12,
+  },
+
+  buttonText: {
     color: theme.colors.default,
-    marginTop: 5,
-    padding: 5,
-  },
-
-  repoStats: {
-    justifyContent: 'space-around',
-  },
-
-  individualStat: {
-    alignItems: 'center',
-  },
-
-  boldText: {
     fontWeight: theme.fontWeights.bold,
-    textAlign: 'center',
   },
 });
 
-const RepositoryItem = ({ repo }) => {
-  const {
-    id,
-    fullName,
-    description,
-    language,
-    forksCount,
-    stargazersCount,
-    ratingAverage,
-    reviewCount,
-    ownerAvatarUrl,
-  } = repo;
+const RepositoryItem = ({ repo = {}, repoID, single = false }) => {
+  const [repoData, setRepoData] = useState(repo);
+  const [getRepo, { data, loading }] = useLazyQuery(GET_REPO);
+  const { id: idFromParams } = useParams();
 
-  return (
-    <View style={styles.mainContainer}>
-      <View style={styles.infoContainer}>
-        <View style={styles.imageContainer}>
-          <Image style={styles.imageStyle} source={{ uri: ownerAvatarUrl }} />
-        </View>
+  useEffect(() => {
+    if (!Object.keys(repoData).length) {
+      getRepo({ variables: { id: repoID || idFromParams } });
+    }
 
-        <View style={styles.repoInfo}>
-          <Text style={styles.name}>{fullName}</Text>
-          <Text style={styles.text}>{description}</Text>
-          <Text style={styles.language} testID={`${id}/lang`}>
-            {language}
-          </Text>
-        </View>
-      </View>
+    if (data && data.repository) {
+      setRepoData(data?.repository);
+    }
+  }, [data?.repository]);
 
-      <RepoStats
-        id={id}
-        forksCount={forksCount}
-        stargazersCount={stargazersCount}
-        ratingAverage={ratingAverage}
-        reviewCount={reviewCount}
-      />
+  if (loading) {
+    <Text>loading...</Text>;
+  }
+
+  return !Object.keys(repoData).length ? (
+    <View style={!single && styles.mainContainer}>
+      <SingleRepository repo={repoData} single={single} />
     </View>
-  );
-};
-
-const RepoStats = ({
-  id,
-  forksCount,
-  stargazersCount,
-  ratingAverage,
-  reviewCount,
-}) => {
-  return (
-    <View style={[styles.infoContainer, styles.repoStats]}>
-      <View style={styles.individualStat}>
-        <Text style={styles.boldText} testID={`${id}/stars`}>
-          {convertThousands(stargazersCount)}
-        </Text>
-        <Text style={styles.text}>Stars</Text>
-      </View>
-      <View style={styles.individualStat}>
-        <Text style={styles.boldText} testID={`${id}/forks`}>
-          {convertThousands(forksCount)}
-        </Text>
-        <Text style={styles.text}>Forks</Text>
-      </View>
-      <View style={styles.individualStat}>
-        <Text style={styles.boldText} testID={`${id}/reviewCount`}>
-          {reviewCount}
-        </Text>
-        <Text style={styles.text}>Reviews</Text>
-      </View>
-      <View style={styles.individualStat}>
-        <Text style={styles.boldText} testID={`${id}/ratingAvg`}>
-          {ratingAverage}
-        </Text>
-        <Text style={styles.text}>Rating</Text>
-      </View>
-    </View>
-  );
+  ) : null;
 };
 
 export default RepositoryItem;
