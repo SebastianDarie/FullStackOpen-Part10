@@ -19,12 +19,10 @@ export const GET_REPO = gql`
   query getRepo($id: ID!) {
     repository(id: $id) {
       ...repoData
-      ...repoReview
     }
   }
 
   ${REPO_DATA}
-  ${REPO_REVIEW}
 `;
 
 export const IS_AUTH = gql`

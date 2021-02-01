@@ -26,6 +26,9 @@ const Main = () => {
         <Route exact path='/sign-in'>
           <SignIn />
         </Route>
+        <Route exact path='/create-review'>
+          <>hello</>
+        </Route>
         <Route path='/:id'>
           <RepositoryItem single />
         </Route>

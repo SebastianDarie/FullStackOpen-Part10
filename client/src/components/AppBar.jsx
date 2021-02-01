@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Link } from 'react-router-native';
+import { Link, useHistory } from 'react-router-native';
 import Constants from 'expo-constants';
 import theme from '../theme';
 import AppBarTab from './AppBarTab';
@@ -17,23 +17,29 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
-  const { data } = useQuery(IS_AUTH);
   const authStorage = useAuth();
   const apolloClient = useApolloClient();
+  const history = useHistory();
+  const { data } = useQuery(IS_AUTH);
 
   const signOut = async () => {
     await authStorage.removeAccessToken();
     await apolloClient.resetStore();
+    history.push('/');
   };
 
-  const auth =
-    data && data.authorizedUser ? (
-      <AppBarTab onPress={signOut}>Sign Out</AppBarTab>
-    ) : (
-      <Link to='/sign-in' component={AppBarTab}>
-        Sign In
+  const auth = data?.authorizedUser ? (
+    <>
+      <Link to='/create-review' component={AppBarTab}>
+        Create a review
       </Link>
-    );
+      <AppBarTab onPress={signOut}>Sign Out</AppBarTab>
+    </>
+  ) : (
+    <Link to='/sign-in' component={AppBarTab}>
+      Sign In
+    </Link>
+  );
 
   return (
     <View style={styles.container}>

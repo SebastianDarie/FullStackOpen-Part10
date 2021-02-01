@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { convertThousands } from '../../utils/functions';
 import theme from '../../theme';
+import { format } from 'date-fns';
 
 const RepositoryInfo = ({ repository, single = false }) => {
   return (
@@ -102,7 +103,7 @@ const ReviewItem = ({ review }) => {
             {review.user.username}
           </Text>
           <Text style={{ color: theme.colors.textSecondary }}>
-            {review.createdAt}
+            {format(new Date(review.createdAt), 'dd-MM-yyyy')}
           </Text>
         </View>
         <Text style={{ flexShrink: 1 }}>{review.text}</Text>
@@ -111,18 +112,23 @@ const ReviewItem = ({ review }) => {
   );
 };
 
+const ItemSeparator = () => <View style={{ height: 10 }} />;
+
 const SingleRepository = ({ repo, single = false }) => {
-  const reviews = repo.reviews;
+  const reviews = repo.reviews.edges.map(({ node }) => node);
 
   return single ? (
     <>
       <FlatList
         data={reviews}
         keyExtractor={(review) => review.id}
-        ItemSeparatorComponent={<View style={{ height: 10 }} />}
-        renderItem={({ item: review }) => <ReviewItem review={review} />}
+        ItemSeparatorComponent={ItemSeparator}
+        renderItem={({ item }) => <ReviewItem review={item} />}
         ListHeaderComponent={
-          <RepositoryInfo repository={repo} single={single} />
+          <>
+            <RepositoryInfo repository={repo} single={single} />
+            <ItemSeparator />
+          </>
         }
       />
     </>
@@ -189,6 +195,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
+  buttonContainer: {
+    backgroundColor: theme.colors.primary,
+    borderRadius: 4,
+    justifyContent: 'center',
+    margin: 8,
+    padding: 12,
+  },
+
+  buttonText: {
+    color: theme.colors.default,
+    fontWeight: theme.fontWeights.bold,
+  },
+
   reviewContainer: {
     backgroundColor: theme.colors.default,
     flexDirection: 'row',
@@ -215,6 +234,7 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
     fontSize: theme.fontSizes.subheading,
     fontWeight: theme.fontWeights.bold,
+    marginBottom: 2,
   },
 });
 

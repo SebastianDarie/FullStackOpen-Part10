@@ -17,19 +17,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 8,
   },
-
-  buttonContainer: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: 4,
-    justifyContent: 'center',
-    margin: 8,
-    padding: 12,
-  },
-
-  buttonText: {
-    color: theme.colors.default,
-    fontWeight: theme.fontWeights.bold,
-  },
 });
 
 const RepositoryItem = ({ repo = {}, repoID, single = false }) => {
@@ -38,12 +25,12 @@ const RepositoryItem = ({ repo = {}, repoID, single = false }) => {
   const { id: idFromParams } = useParams();
 
   useEffect(() => {
-    if (!Object.keys(repoData).length) {
+    if (Object.keys(repoData).length === 0) {
       getRepo({ variables: { id: repoID || idFromParams } });
     }
 
     if (data && data.repository) {
-      setRepoData(data?.repository);
+      setRepoData(data.repository);
     }
   }, [data?.repository]);
 
@@ -51,7 +38,7 @@ const RepositoryItem = ({ repo = {}, repoID, single = false }) => {
     <Text>loading...</Text>;
   }
 
-  return !Object.keys(repoData).length ? (
+  return Object.keys(repoData).length !== 0 ? (
     <View style={!single && styles.mainContainer}>
       <SingleRepository repo={repoData} single={single} />
     </View>

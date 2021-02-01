@@ -12,11 +12,6 @@ export const REPO_DATA = gql`
     description
     language
     url
-  }
-`;
-
-export const REPO_REVIEW = gql`
-  fragment repoReview on Repository {
     reviews {
       edges {
         node {
