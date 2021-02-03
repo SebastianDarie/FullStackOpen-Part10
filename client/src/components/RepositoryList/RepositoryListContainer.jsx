@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useHistory } from 'react-router-native';
-import RepositoryItem from './RepositoryItem';
+import RepositoryView from '../RepositoryView';
 
 const styles = StyleSheet.create({
   separator: {
@@ -22,7 +22,7 @@ const RepositoryListContainer = ({ repositories }) => {
       renderItem={({ item }) => (
         <TouchableOpacity onPress={() => history.push(`/${item.id}`)}>
           <View>
-            <RepositoryItem repo={item} repoID={item.id} />
+            <RepositoryView repo={item} />
           </View>
         </TouchableOpacity>
       )}

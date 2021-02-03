@@ -5,7 +5,8 @@ import RepositoryList from './RepositoryList/index';
 import theme from '../theme';
 import AppBar from './AppBar';
 import SignIn from './SignIn/index';
-import RepositoryItem from './RepositoryList/RepositoryItem';
+import SingleRepository from './RepositoryList/SingleRepository';
+import ReviewForm from './ReviewForm';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,10 +28,10 @@ const Main = () => {
           <SignIn />
         </Route>
         <Route exact path='/create-review'>
-          <>hello</>
+          <ReviewForm />
         </Route>
         <Route path='/:id'>
-          <RepositoryItem single />
+          <SingleRepository />
         </Route>
         <Redirect to='/' />
       </Switch>
