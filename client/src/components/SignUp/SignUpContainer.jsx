@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
@@ -11,17 +11,29 @@ const styles = StyleSheet.create({
   formikView: {
     backgroundColor: theme.colors.default,
     justifyContent: 'space-evenly',
-    height: 200,
+    height: 300,
     paddingHorizontal: 12,
   },
 });
 
 const validationSchema = yup.object().shape({
-  username: yup.string().trim().required('Username is required'),
-  password: yup.string().trim().required('Password is required'),
+  username: yup
+    .string()
+    .min(1, 'Username is too short')
+    .max(30, 'Username is too long')
+    .required('Username is required'),
+  password: yup
+    .string()
+    .min(4, 'Password is too short')
+    .max(40, 'Password is too long')
+    .required('Password is required'),
+  confirmation: yup
+    .string()
+    .oneOf([yup.ref('password')], 'Passwords do not match')
+    .required('Password confirmation is required'),
 });
 
-const SignInContainer = ({ onSubmit }) => {
+const SignUpContainer = ({ onSubmit }) => {
   return (
     <Formik
       initialValues={{ username: '', password: '' }}
@@ -37,7 +49,12 @@ const SignInContainer = ({ onSubmit }) => {
               placeholder='Password'
               secureTextEntry
             />
-            <Button onPress={handleSubmit}>Sign in</Button>
+            <FormikTextInput
+              name='confirmation'
+              placeholder='Password confirmation'
+              secureTextEntry
+            />
+            <Button onPress={handleSubmit}>Sign up</Button>
           </View>
         );
       }}
@@ -45,4 +62,4 @@ const SignInContainer = ({ onSubmit }) => {
   );
 };
 
-export default SignInContainer;
+export default SignUpContainer;

@@ -7,6 +7,7 @@ import { CREATE_REVIEW } from '../../graphql/mutations';
 import { useHistory } from 'react-router-native';
 import FormikTextInput from '../FormikTextInput';
 import theme from '../../theme';
+import Button from '../Button';
 
 const validationSchema = yup.object().shape({
   ownerName: yup.string().trim().required('Repository owner name is required'),
@@ -20,18 +21,18 @@ const validationSchema = yup.object().shape({
 });
 
 const ReviewForm = () => {
-  const [createReview] = useMutation(CREATE_REVIEW);
+  const [createReview] = useMutation(CREATE_REVIEW, {
+    async onCompleted(data) {
+      history.push(`/${data.createReview.repositoryId}`);
+    },
+  });
   const history = useHistory();
 
   const submitReview = async (input) => {
     try {
-      const { data } = createReview({
+      createReview({
         variables: { ...input, rating: parseInt(input.rating) },
       });
-
-      if (data?.createReview) {
-        history.push(`/${data.createReview.repositoryId}`);
-      }
     } catch (error) {
       console.log(error);
     }
@@ -73,19 +74,7 @@ const ReviewForm = () => {
               keyboardType='numeric'
             />
             <FormikTextInput name='text' placeholder='Review' multiline />
-            <TouchableWithoutFeedback onPress={(e) => handleSubmit(e)}>
-              <Text
-                style={{
-                  borderRadius: 4,
-                  color: theme.colors.default,
-                  marginVertical: 8,
-                  padding: 12,
-                  textAlign: 'center',
-                }}
-              >
-                Save Review
-              </Text>
-            </TouchableWithoutFeedback>
+            <Button onPress={handleSubmit}>Create a review</Button>
           </View>
         );
       }}
