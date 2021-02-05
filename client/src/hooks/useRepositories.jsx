@@ -1,9 +1,16 @@
 import { useQuery } from '@apollo/react-hooks';
 import { GET_REPOS } from '../graphql/queries';
 
+const criteriaOptions = {
+  latest_repos: { orderBy: 'CREATED_AT', orderDirection: 'DESC' },
+  highest_rated: { orderBy: 'RATING_AVERAGE', orderDirection: 'DESC' },
+  lowest_rated: { orderBy: 'RATING_AVERAGE', orderDirection: 'ASC' },
+};
+
 const useRepositories = () => {
   const { data, loading, refetch } = useQuery(GET_REPOS, {
     fetchPolicy: 'cache-and-network',
+    variables: criteriaOptions,
   });
 
   let repositories = [];

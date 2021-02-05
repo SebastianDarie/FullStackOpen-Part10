@@ -2,6 +2,7 @@ import React from 'react';
 import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useHistory } from 'react-router-native';
 import RepositoryView from '../RepositoryView';
+import SortingMenu from './SortingMenu';
 
 const styles = StyleSheet.create({
   separator: {
@@ -11,13 +12,16 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryListContainer = ({ repositories }) => {
+const RepositoryListContainer = ({ repositories, criteria, setCriteria }) => {
   const history = useHistory();
 
   return (
     <FlatList
       data={repositories}
       keyExtractor={(repo) => repo.id}
+      ListHeaderComponent={() => (
+        <SortingMenu criteria={criteria} setCriteria={setCriteria} />
+      )}
       ItemSeparatorComponent={ItemSeparator}
       renderItem={({ item }) => (
         <TouchableOpacity onPress={() => history.push(`/${item.id}`)}>
