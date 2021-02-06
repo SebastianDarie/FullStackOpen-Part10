@@ -7,10 +7,10 @@ const criteriaOptions = {
   lowest_rated: { orderBy: 'RATING_AVERAGE', orderDirection: 'ASC' },
 };
 
-const useRepositories = () => {
+const useRepositories = ({ criteria, filter }) => {
   const { data, loading, refetch } = useQuery(GET_REPOS, {
     fetchPolicy: 'cache-and-network',
-    variables: criteriaOptions,
+    variables: { ...criteriaOptions[criteria], filter },
   });
 
   let repositories = [];

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useHistory } from 'react-router-native';
+import { withRouter } from 'react-router-native';
 import RepositoryView from '../RepositoryView';
+import FilterInput from './FilterInput';
 import SortingMenu from './SortingMenu';
 
 const styles = StyleSheet.create({
@@ -12,26 +13,36 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryListContainer = ({ repositories, criteria, setCriteria }) => {
-  const history = useHistory();
-
-  return (
-    <FlatList
-      data={repositories}
-      keyExtractor={(repo) => repo.id}
-      ListHeaderComponent={() => (
+class RepositoryListContainer extends Component {
+  renderHeaderComponent = () => {
+    const { criteria, setCriteria, filter, setFilter } = this.props;
+    return (
+      <>
+        <FilterInput filter={filter} setFilter={setFilter} />
         <SortingMenu criteria={criteria} setCriteria={setCriteria} />
-      )}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => history.push(`/${item.id}`)}>
-          <View>
-            <RepositoryView repo={item} />
-          </View>
-        </TouchableOpacity>
-      )}
-    />
-  );
-};
+      </>
+    );
+  };
 
-export default RepositoryListContainer;
+  render() {
+    const { history, repositories } = this.props;
+
+    return (
+      <FlatList
+        data={repositories}
+        keyExtractor={(repo) => repo.id}
+        ListHeaderComponent={this.renderHeaderComponent}
+        ItemSeparatorComponent={ItemSeparator}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => history.push(`/${item.id}`)}>
+            <View>
+              <RepositoryView repo={item} />
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+    );
+  }
+}
+
+export default withRouter(RepositoryListContainer);

@@ -15,7 +15,8 @@ const createApolloClient = (authStorage) => {
         console.log(e);
       }
     },
-    uri: Constants.manifest.extra.apolloURI,
+    //uri: Constants.manifest.extra.apolloURI,
+    uri: 'http://172.18.19.107:5000/graphql',
   });
 };
 
