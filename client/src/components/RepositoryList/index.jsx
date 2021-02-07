@@ -5,7 +5,15 @@ import RepositoryListContainer from './RepositoryListContainer';
 const RepositoryList = () => {
   const [filter, setFilter] = useState('');
   const [sorting, setSorting] = useState('latest_repos');
-  const { repositories } = useRepositories({ criteria: sorting, filter });
+  const { repositories, loading, handleFetchMore } = useRepositories({
+    criteria: sorting,
+    filter,
+    first: 4,
+  });
+
+  const onEndReached = () => {
+    handleFetchMore();
+  };
 
   return (
     <RepositoryListContainer
@@ -14,6 +22,8 @@ const RepositoryList = () => {
       setCriteria={setSorting}
       filter={filter}
       setFilter={setFilter}
+      loading={loading}
+      onEndReached={onEndReached}
     />
   );
 };

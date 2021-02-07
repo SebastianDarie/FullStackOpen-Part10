@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import { withRouter } from 'react-router-native';
 import RepositoryView from '../RepositoryView';
 import FilterInput from './FilterInput';
@@ -25,22 +31,31 @@ class RepositoryListContainer extends Component {
   };
 
   render() {
-    const { history, repositories } = this.props;
+    const { history, loading, onEndReached, repositories } = this.props;
+
+    const renderItem = ({ item: repo }) => {
+      return (
+        <TouchableOpacity onPress={() => history.push(`/${repo.id}`)}>
+          <View>
+            <RepositoryView repo={repo} />
+          </View>
+        </TouchableOpacity>
+      );
+    };
 
     return (
-      <FlatList
-        data={repositories}
-        keyExtractor={(repo) => repo.id}
-        ListHeaderComponent={this.renderHeaderComponent}
-        ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => history.push(`/${item.id}`)}>
-            <View>
-              <RepositoryView repo={item} />
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+      <>
+        <FlatList
+          data={repositories}
+          keyExtractor={(item) => item.id}
+          ListHeaderComponent={this.renderHeaderComponent}
+          ItemSeparatorComponent={ItemSeparator}
+          renderItem={renderItem}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={0.5}
+        />
+        {loading && <Text>Loading repos...</Text>}
+      </>
     );
   }
 }

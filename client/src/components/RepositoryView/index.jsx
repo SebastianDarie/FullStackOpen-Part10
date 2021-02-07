@@ -1,9 +1,15 @@
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import RepositoryInfo from './RepositoryInfo';
 import ReviewItem from './ReviewItem';
 
-const RepositoryView = ({ repo, reviews = [], github = false }) => {
+const RepositoryView = ({
+  repo,
+  reviews = [],
+  github = false,
+  handleFetchMore,
+  loading,
+}) => {
   if (!repo) return <div>not found</div>;
 
   return reviews.length ? (
@@ -19,7 +25,10 @@ const RepositoryView = ({ repo, reviews = [], github = false }) => {
             <ItemSeparator />
           </>
         }
+        onEndReached={handleFetchMore}
+        onEndReachedThreshold={0.1}
       />
+      {loading && <Text>Loading more reviews ...</Text>}
     </>
   ) : (
     <RepositoryInfo repository={repo} github={github} />

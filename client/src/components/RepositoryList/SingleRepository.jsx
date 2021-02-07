@@ -1,24 +1,23 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { useParams } from 'react-router-native';
 import useSingleRepo from '../../hooks/useSingleRepo';
 import RepositoryView from '../RepositoryView';
 
 const SingleRepository = () => {
   const { id } = useParams();
-  const { repo, loading } = useSingleRepo(id);
+  const { repo, loading, handleFetchMore } = useSingleRepo({ id, first: 4 });
 
-  let reviewData;
+  const reviewData = repo?.reviews.edges.map(({ node }) => node);
 
-  if (repo) {
-    reviewData = repo?.reviews.edges.map(({ node }) => node);
-  }
-
-  if (loading) {
-    return <Text>loading...</Text>;
-  }
-
-  return <RepositoryView repo={repo} reviews={reviewData} github />;
+  return (
+    <RepositoryView
+      repo={repo}
+      reviews={reviewData}
+      handleFetchMore={handleFetchMore}
+      loading={loading}
+      github
+    />
+  );
 };
 
 export default SingleRepository;
