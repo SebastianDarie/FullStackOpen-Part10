@@ -1,5 +1,5 @@
 import { gql } from '@apollo/react-hooks';
-import { REPO_DATA } from './fragments';
+import { REPO_DATA, REPO_REVIEW } from './fragments';
 
 export const GET_REPOS = gql`
   query getRepos(
@@ -39,37 +39,25 @@ export const GET_REPO = gql`
     repository(id: $id) {
       ...repoData
       reviews(first: $first, after: $after) {
-        edges {
-          node {
-            id
-            text
-            rating
-            createdAt
-            user {
-              id
-              username
-            }
-          }
-          cursor
-        }
-        pageInfo {
-          endCursor
-          startCursor
-          totalCount
-          hasNextPage
-        }
+        ...repoReview
       }
     }
   }
 
   ${REPO_DATA}
+  ${REPO_REVIEW}
 `;
 
 export const IS_AUTH = gql`
-  query {
+  query getAuthorizedUser($includeReviews: Boolean = false) {
     authorizedUser {
       id
       username
+      reviews @include(if: $includeReviews) {
+        ...repoReview
+      }
     }
   }
+
+  ${REPO_REVIEW}
 `;

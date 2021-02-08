@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import theme from '../../theme';
 import { format } from 'date-fns';
 
-const ReviewItem = ({ review }) => {
+const ReviewItem = ({ review, reviewsPage = false }) => {
   return (
     <View style={styles.reviewContainer}>
       <View style={styles.centerItems}>
@@ -14,7 +14,9 @@ const ReviewItem = ({ review }) => {
       <View style={{ flex: 20, flexShrink: 1 }}>
         <View>
           <Text style={{ fontWeight: theme.fontWeights.bold }}>
-            {review.user.username}
+            {reviewsPage
+              ? review.repositoryId.replace('.', '/')
+              : review.user.username}
           </Text>
           <Text style={{ color: theme.colors.textSecondary }}>
             {format(new Date(review.createdAt), 'dd-MM-yyyy')}

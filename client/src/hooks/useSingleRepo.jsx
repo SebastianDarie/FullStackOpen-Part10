@@ -4,6 +4,7 @@ import { GET_REPO } from '../graphql/queries';
 const useSingleRepo = ({ id, first }) => {
   const { data, loading, fetchMore } = useQuery(GET_REPO, {
     fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
     variables: { id, first },
   });
 
@@ -17,8 +18,11 @@ const useSingleRepo = ({ id, first }) => {
     const canFetchMore =
       !loading && data?.repository.reviews.pageInfo.hasNextPage;
 
-    if (!canFetchMore) {
-      console.log(canFetchMore);
+    if (
+      !canFetchMore ||
+      data?.repository.reviews.edges.length ===
+        data?.repository.reviews.pageInfo.totalCount
+    ) {
       return;
     }
 

@@ -14,3 +14,28 @@ export const REPO_DATA = gql`
     url
   }
 `;
+
+export const REPO_REVIEW = gql`
+  fragment repoReview on ReviewConnection {
+    edges {
+      node {
+        id
+        text
+        rating
+        repositoryId
+        createdAt
+        user {
+          id
+          username
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      startCursor
+      totalCount
+      hasNextPage
+    }
+  }
+`;

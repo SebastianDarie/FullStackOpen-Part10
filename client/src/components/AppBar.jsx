@@ -33,6 +33,9 @@ const AppBar = () => {
       <Link to='/create-review' component={AppBarTab}>
         Create a review
       </Link>
+      <Link to='/my-reviews' component={AppBarTab}>
+        My reviews
+      </Link>
       <AppBarTab onPress={signOut}>Sign Out</AppBarTab>
     </>
   ) : (

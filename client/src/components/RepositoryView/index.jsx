@@ -10,7 +10,11 @@ const RepositoryView = ({
   handleFetchMore,
   loading,
 }) => {
-  if (!repo) return <div>not found</div>;
+  const listHeaderComponent = repo ? (
+    <>
+      <RepositoryInfo repository={repo} github={github} />
+    </>
+  ) : null;
 
   return reviews.length ? (
     <>
@@ -18,20 +22,17 @@ const RepositoryView = ({
         data={reviews}
         keyExtractor={(review) => review.id}
         ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item }) => <ReviewItem review={item} />}
-        ListHeaderComponent={
-          <>
-            <RepositoryInfo repository={repo} github={github} />
-            <ItemSeparator />
-          </>
-        }
+        renderItem={({ item }) => (
+          <ReviewItem review={item} reviewsPage={!repo} />
+        )}
+        ListHeaderComponent={listHeaderComponent}
         onEndReached={handleFetchMore}
         onEndReachedThreshold={0.1}
       />
       {loading && <Text>Loading more reviews ...</Text>}
     </>
   ) : (
-    <RepositoryInfo repository={repo} github={github} />
+    listHeaderComponent
   );
 };
 
