@@ -4,7 +4,7 @@ import { IS_AUTH } from '../graphql/queries';
 import RepositoryView from './RepositoryView';
 
 const UserReviews = () => {
-  const { data, loading } = useQuery(IS_AUTH, {
+  const { data, loading, refetch } = useQuery(IS_AUTH, {
     variables: { includeReviews: true },
   });
 
@@ -14,7 +14,9 @@ const UserReviews = () => {
     reviews = data.authorizedUser.reviews.edges.map(({ node }) => node);
   }
 
-  return <RepositoryView reviews={reviews} loading={loading} />;
+  return (
+    <RepositoryView reviews={reviews} loading={loading} refetch={refetch} />
+  );
 };
 
 export default UserReviews;

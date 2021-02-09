@@ -9,6 +9,7 @@ const RepositoryView = ({
   github = false,
   handleFetchMore,
   loading,
+  refetch,
 }) => {
   const listHeaderComponent = repo ? (
     <>
@@ -23,7 +24,7 @@ const RepositoryView = ({
         keyExtractor={(review) => review.id}
         ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item }) => (
-          <ReviewItem review={item} reviewsPage={!repo} />
+          <ReviewItem review={item} reviewsPage={!repo} refetch={refetch} />
         )}
         ListHeaderComponent={listHeaderComponent}
         onEndReached={handleFetchMore}
